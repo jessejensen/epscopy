@@ -33,9 +33,6 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/jessejensen/ebscopy"
 
-[tool.hatch.version]
-path = "ebscopy/__init__.py"
-
 [tool.hatch.build.targets.wheel.shared-data]
 samples = "ebscopy/samples"
 docs = "ebscopy/docs"
