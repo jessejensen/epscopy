@@ -94,7 +94,7 @@ def _get_item_data(items, key, value):
     """
     Return the ``Data`` component of a dict with the ``key`` of ``value`` from a list of dicts
 
-    :param list items: a list of dicts, each of which contains keys, inlcuding ``Data``
+    :param list items: a list of dicts, each of which contains keys, including ``Data``
     :param string key: the key to search
     :param string value: the value to search for
     :rtype: string

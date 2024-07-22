@@ -66,7 +66,7 @@ class UseOrGet(TestCase):
 
     def test_bad_kind(self):
         with self.assertRaises(KeyError):
-           edsapi._use_or_get("bad_kind", "")
+            edsapi._use_or_get("bad_kind", "")
 
 class GetOrUse(TestCase):
     @mock.patch.dict(os.environ, {"EDS_BASE_HOST": "env_host"})
@@ -85,8 +85,8 @@ class GetOrUse(TestCase):
         self.assertEqual(output, "passed_host")
 
     def test_no_variable_in_env(self):
-        output = edsapi._get_or_use("base_host", "passed_host")
-        self.assertEqual(output, "passed_host")
+        output = edsapi._get_or_use("base_host", "passed_host_2")
+        self.assertEqual(output, "passed_host_2")
 
     def test_no_variable_in_env_and_no_param(self):
         with self.assertRaises(ValueError):
