@@ -7,8 +7,8 @@
 # Do we need to test that an implicit connection with bad env variables doesn't work? I don't think so...
 # 
 
-from ebscopy.edsapi import SessionError
-import ebscopy.edsapi as edsapi
+from ebscopy import edsapi 
+#import edsapi as edsapi
 import unittest
 #from requests import HTTPError
 import os
@@ -45,9 +45,9 @@ class CreateSessionsWithENV(unittest.TestCase):
 		res_1_green							= sess_1.search("green")
 		self.assertNotEqual(res_1_blue, res_1_green)
 		sess_1.end()
-		with self.assertRaises(SessionError):								# Explicitly ended, so don't try to recreate
-			res_1_red						= sess_1.search("red")
-		res_2_green							= sess_2.search("green")
+		with self.assertRaises(edsapi.SessionError):								# Explicitly ended, so don't try to recreate
+			#res_1_red						= sess_1.search("red")
+			res_2_green							= sess_2.search("green")
 		#self.assertEqual(res_1_green, res_2_green)
 		self.assertEqual(int(round(len(res_1_green) - len(res_2_green), -1)), 0)
 		sess_2.end()
@@ -193,7 +193,6 @@ class SearchTests(unittest.TestCase):
 	def test_bad_limiters(self):
 		sess								= edsapi.Session()
 		res									= sess.search("volcano", limiters=["JJ:Y", "XX:Y"])
-
 		self.assertTrue(res)
 
 		# In strict mode, it should raise a ValueError
@@ -284,10 +283,8 @@ class PageTests(unittest.TestCase):
 
 	def test_too_many_page_movement(self):
 		sess								= edsapi.Session()
-
 		res_blue							= sess.search("blue", rpp=100)
 		res_bad								= sess + 5
-
 		self.assertFalse(res_bad)													# Does skipping too many pages give an empty result set?
 
 		res_roygbiv							= []
@@ -307,7 +304,7 @@ class PageTests(unittest.TestCase):
 		sess.end()
 
 	#@unittest.expectedFailure														#("This is currently broken by a bug in the API")
-	@unittest.skip("This is currently broken by a bug in the API")
+	#@unittest.skip("This is currently broken by a bug in the API")
 	def test_basic_long_page_movement(self):
 		sess								= edsapi.Session()
 
@@ -327,7 +324,7 @@ class PageTests(unittest.TestCase):
 		sess.end()
 
 	#@unittest.expectedFailure														#("This is currently broken by a bug in the API")
-	@unittest.skip("This is currently broken by a bug in the API")
+	#@unittest.skip("This is currently broken by a bug in the API")
 	def test_facet_long_page_movement(self):
 		sess								= edsapi.Session()
 
@@ -362,7 +359,7 @@ class RecordTests(unittest.TestCase):
 		self.assertIsInstance(rec_0.dbid, (str))
 		self.assertIsInstance(rec_0.an, (str))
 		self.assertIsInstance(rec_0.plink, (str))
-		self.assertRegex(rec_0.plink, "^http://")
+		self.assertRegex(rec_0.plink, "^https://")
 
 		self.assertEqual(rec_0, rec_0)									# Test identity
 		self.assertEqual(rec_1_a, rec_1_b)								# Test two equal objects
@@ -415,5 +412,5 @@ class CorporateAffiliation(unittest.TestCase):
 		rec_1								= res.records_simple[1]
 		self.assertIsInstance(rec_1["CorpAffiliation"], str)
 		self.assertGreater(len(rec_1["AllAffiliations"]), 0)
-		
+	
 # EOF
