@@ -1,3 +1,3 @@
 # test __init__.py
 
-from ebscopy import ebscopy
+from ebscopy import edsapi
