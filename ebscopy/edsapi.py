@@ -68,7 +68,7 @@ def _parse_highlight(text):
     """
     output = {}
     output["orig"]							= text
-    output["clean"]							= ""
+    output["clean"]							= text
     output["start_pos"]						= 0
     output["end_pos"]						= 0
 
