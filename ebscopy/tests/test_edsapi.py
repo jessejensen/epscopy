@@ -50,7 +50,7 @@ class GetItemData(TestCase):
         output = edsapi._get_item_data_by_group(self.data, "A")
         self.assertEqual(output, "1")
 
-@mock.patch.dict(os.environ, {"EDS_USER": "fake_user", "EDS_PASS": "fake_password"})
+@mock.patch.dict(os.environ, {"EDS_USER": "fake_user", "EDS_PASS": "fake_password", "EDS_ORG": "", "EDS_PROFILE": ""})
 class UseOrGet(TestCase):
     def test_in_env(self):
         output = edsapi._use_or_get("user_id", "")
@@ -85,6 +85,8 @@ class GetOrUse(TestCase):
         self.assertEqual(output, "passed_host")
 
     def test_no_variable_in_env(self):
+        # May want to capture the actual value and put it back later
+        os.environ.pop('EDS_BASE_HOST', None)
         output = edsapi._get_or_use("base_host", "passed_host_2")
         self.assertEqual(output, "passed_host_2")
 
