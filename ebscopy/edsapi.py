@@ -1,13 +1,7 @@
-# ebscopy.py
+# edsapi.py
 #
 # This is the primary source file for the EBSCO Discovery Service API Python Module
 # 
-# Location of assignment equal sign:
-#											=
-
-# TODO:
-#	be able to use IP authentication
-#	close on destroy
 
 import os																	# Get ENV variables with auth info
 import json																	# Manage data
@@ -18,26 +12,8 @@ import tomllib																# TOML file parser for package configuration/versi
 import requests                                                             # Does the heavy HTTP lifting
 from lxml import html														# Strip HTML
 import dateutil.parser														# Parse text to date
-#import warnings															# Allow warnings
-
-## Work-in-Progress
-## Create logger
-#logger										= logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
-#fh = logging.FileHandler('/tmp/jjj-ebscopy.log')
-#fh.setLevel(logging.DEBUG)
-#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#fh.setFormatter(formatter)
-#logger.addHandler(fh)
-#
-#logger.debug("Starting ebscopy! (debug)")
-#logger.info("Starting ebscopy! (info)")
-#logger.warn("Starting ebscopy! (warn)")
-#logger.error("Starting ebscopy! (error)")
-#logger.critical("Starting ebscopy! (critical)")
 
 ### Utility Functions
-# TODO: this assumes only one highlight in string; what if more?
 
 #Parse pyproject.toml file for version, and call toml_parse function as version
 def toml_parse():
@@ -88,8 +64,6 @@ def _parse_highlight(text):
     return output
 # End of [_parse_highlight] function
 
-# TODO: Do we need this? 
-# TODO: Use group instead of name?
 def _get_item_data(items, key, value):
     """
     Return the ``Data`` component of a dict with the ``key`` of ``value`` from a list of dicts
@@ -617,9 +591,6 @@ class Session:
             raise SessionError("No Session Token received from API!")
 
         # Get Info from API; used by tests and sets some defaults
-        # TODO: parse some of this out
-        # TODO: catch SessionTimeout here?
-        #	 "ApplicationSettings":{ "SessionTimeout":"480"
         self.info_data						= self._request("Info", {})
 
         self.valid_sorts					= set()
@@ -654,12 +625,6 @@ class Session:
         self.include_image_quick_view		= bool()
         if self.info_data.get("ViewResultSettings", {}).get("IncludeImageQuickView", {}).get("DefaultOn", "n") == "y":
             self.include_image_quick_view	= True
-            
-
-
-        # TODO: Do more here
-
-
     # End of [__init__] function
 
     def __repr__(self):
@@ -725,7 +690,6 @@ class Session:
         :returns: Results object
         :rtype: class:`ebscopy.Results`
         """
-        # TODO - JJJ, double check logic here to verify working as expected
         try:
             if isinstance(other, int):
                 new_page						= self.current_page + other
@@ -1074,13 +1038,11 @@ class Results:
 
     # Initialize 
     def __init__(self):
-        #self.query_string					= ""							# String straight from JSON
-    
         self.search_queries					= []
         self.stat_total_hits				= 0
         self.stat_total_time				= 0
         self.page_number					= 0
-        self.rec_format						= ""							# String straight from JSON
+        self.rec_format						= ""	# String straight from JSON
         self.stat_databases_raw				= []
         self.avail_facets_raw				= []
         self.avail_facets_labels			= []
@@ -1088,12 +1050,12 @@ class Results:
         self.avail_facets_by_id				= {}
         self.actions_addable				= []
         self.actions_removable				= []
-        self.auto_suggestions				= []							# List of automatic suggestions
-        self.records_simple					= []							# List of dicts w/ keys: PLink, DbID, An, Title, Author, etc.
-        self.records_raw					= []							# List of raw Records straight from JSON
-        self.record							= []							# List of DbId/An tuples
-        self.rpp							= []							# TODO: JJJ - [insert better description of this variable here]
-        self.search_criteria				= []							# TODO: JJJ - [insert better description of this variable here]
+        self.auto_suggestions				= []	# List of automatic suggestions
+        self.records_simple					= []	# List of dicts w/ keys: PLink, DbID, An, Title, Author, etc.
+        self.records_raw					= []	# List of raw Records straight from JSON
+        self.record							= []	# List of DbId/An tuples
+        self.rpp							= []	# Results per page
+        self.search_criteria				= []	# Object with various search info
 
     ## Internal helper functions
     # Representation function
@@ -1234,8 +1196,6 @@ class Results:
                 for value in facet["AvailableFacetValues"]:
                     self.actions_addable.append(value["AddAction"])
 
-            #TODO: add available criteria. here? or outside the if hits>0?
-    
             self.rec_format					= data["SearchResult"]["Data"]["RecordFormat"]
 
             if len(data["SearchResult"].get("Data", {}).get("Records", [])) == 0:
@@ -1284,7 +1244,6 @@ class Results:
                         simple_rec["CorpAffiliationRaw"]	= item["Data"]
                         # This is so dirty. The pta database seems to provide these as HTML tags that have been HTML enocoded. Example:
                         # &lt;searchLink fieldCode="ZP" term="%22IZMIR+KATIP+CELEBI+UNIV%22"&gt;IZMIR KATIP CELEBI UNIV&lt;/searchLink&gt;; &lt;searchLink fieldCode="ZP" term="%22MIDDLE+EAST+TECHNICAL+UNIV%22"&gt;MIDDLE EAST TECHNICAL UNIV&lt;/searchLink&gt;
-                        # TODO - JJJ, an additional function for HTML parsing? 
                         #simple_rec["CorpAffiliation"]	= html.fromstring(html.fromstring(simple_rec["CorpAffiliationRaw"]).text_content()).text_content() 
                         simple_rec["CorpAffiliation"]	= html.fromstring(simple_rec["CorpAffiliationRaw"]).text_content()
                         #simple_rec["CorpAffiliation"]	= item["Data"]
@@ -1484,14 +1443,11 @@ class Record:
         self.pubtype						= data["Record"]["Header"]["PubType"]
         self.pubtype_id						= data["Record"]["Header"]["PubTypeId"]
         self.plink							= data["Record"]["PLink"]
-        # TODO, determine fulltext status
         #self.fulltext_avail				= False
-        # TODO: generate simple values for all possiblities
         self.simple_title					= _get_item_data_by_group(data["Record"]["Items"], "Ti")
         self.simple_author					= _get_item_data_by_group(data["Record"]["Items"], "Au")
         self.simple_subject					= _get_item_data_by_group(data["Record"]["Items"], "Su")
 
-        # TODO: Maybe don't even try to get title, author, and subject by group (above) for IQVs?
         if self.dbid == "iqv":
             self.is_image_quick_view		= True
             self.images						= data["Record"].get("IllustrationInfo", {}).get("Images", [])
