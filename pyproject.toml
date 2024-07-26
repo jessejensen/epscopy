@@ -4,16 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ebscopy"
-version = "20240712"
+version = "1.0.0"
 description = "Official Python wrapper for the EBSCO Discovery Service (EDS) API"
 readme = "README.md"
 license = {file = "LICENSE.TXT"}
 requires-python = ">=3.12"
 authors = [
     { name = "Jesse Jensen", email = "jjensen@ebsco.com" },
+    { name = "Olivia Muzzy", email = "omuzzy@ebsco.com" },
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jessejensen/ebscopy"
+Homepage = "https://github.com/ebsco/ebscopy"
 
 [tool.hatch.build.targets.wheel.shared-data]
 samples = "ebscopy/samples"
@@ -40,4 +40,7 @@ docs = "ebscopy/docs"
 [tool.hatch.build.targets.sdist]
 include = [
     "/ebscopy",
+]
+exclude = [
+    ".gitignore",
 ]
