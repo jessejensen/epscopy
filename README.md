@@ -5,9 +5,9 @@ The official Python wrapper for the EBSCO Discovery Service API.
 
 # Usage
 ```python
-import ebscopy
+from ebscopy import edsapi
 
-session = ebscopy.Session(user_id="user", password="pass", profile="profile", org="org", guest="n")
+session = edsapi.Session(user_id="user", password="pass", profile="profile", org="org", guest="n")
 results = session.search("blue")
 
 print("Total Hits: %s" % results.stat_total_hits)
