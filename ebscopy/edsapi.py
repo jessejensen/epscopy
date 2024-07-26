@@ -111,7 +111,7 @@ def _use_or_get(kind, value=""):
     :param string kind: type of value
     :param string value: content of value
     :rtype: string
-    :raises ValueError: when value is empty and environemnt variable is not found
+    :raises ValueError: when value is empty and environment variable is not found
     """
     kind_env_map							= {
                                                 "user_id":		"EDS_USER",
