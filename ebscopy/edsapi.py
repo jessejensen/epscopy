@@ -26,7 +26,7 @@ def toml_parse():
     toml_version = toml_dict["project"]["version"]
     return toml_version
 
-version = toml_parse()
+#version = toml_parse()
 
 #end of toml_parse function
 
@@ -299,7 +299,7 @@ class _Connection:
         self.user_id						= user_id
         self.password						= password
         self.userpass						= (self.user_id, self.password)
-        self.interface_id					= "ebscopy %s" % (version)
+        #self.interface_id					= "ebscopy %s" % (version)
         self.auth_token						= ""
         self.auth_timeout					= "" 
         self.auth_timeout_time				= ""

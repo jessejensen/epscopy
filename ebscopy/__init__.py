@@ -19,10 +19,13 @@ if os.environ.get('EDS_LOG_LEVEL') in log_levels.keys():
 else:
     log_level								= logging.WARNING
 
-logging.basicConfig(
-	filename='/tmp/ebscopy-%s.log' % (os.getpid()),
-	level=log_level,
-	format='%(asctime)s %(levelname)s %(module)s.%(funcName)s: %(message)s'
-)
+log_dir = os.environ.get('EDS_LOG_DIR')
+if log_dir != None:
+	log_file = '%s/log/ebscopy-%s.log' % (log_dir, os.getpid())
+	logging.basicConfig(
+		filename= log_file,
+		level=log_level,
+		format='%(asctime)s %(levelname)s %(module)s.%(funcName)s: %(message)s'
+	)
 
 #EOF
