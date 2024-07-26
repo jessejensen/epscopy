@@ -2,7 +2,9 @@
 
 import os
 import logging 
-from ebscopy import *
+from ebscopy import edsapi
+
+__all__ = ['edsapi']		#refers to 'edsapi.py' file
 
 log_levels									= {
 												'DEBUG':	logging.DEBUG,
@@ -13,14 +15,17 @@ log_levels									= {
 												}
 
 if os.environ.get('EDS_LOG_LEVEL') in log_levels.keys():
-	log_level								= log_levels[os.environ.get('EDS_LOG_LEVEL')]
+    log_level								= log_levels[os.environ.get('EDS_LOG_LEVEL')]
 else:
-	log_level								= logging.WARNING
+    log_level								= logging.WARNING
 
-logging.basicConfig(
-	filename='/tmp/ebscopy-%s.log' % (os.getpid()),
-	level=log_level,
-	format='%(asctime)s %(levelname)s %(module)s.%(funcName)s: %(message)s'
-)
+log_dir = os.environ.get('EDS_LOG_DIR')
+if log_dir != None:
+	log_file = '%s/log/ebscopy-%s.log' % (log_dir, os.getpid())
+	logging.basicConfig(
+		filename= log_file,
+		level=log_level,
+		format='%(asctime)s %(levelname)s %(module)s.%(funcName)s: %(message)s'
+	)
 
 #EOF
